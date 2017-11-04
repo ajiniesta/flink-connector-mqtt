@@ -23,41 +23,15 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
-/**
- * This example shows an implementation of WordCount with data from a text
- * socket. To run the example make sure that the service providing the text data
- * is already up and running.
- * 
- * <p>
- * To start an example socket text stream on your local machine run netcat from
- * a command line: <code>nc -lk 9999</code>, where the parameter specifies the
- * port number.
- * 
- * 
- * <p>
- * Usage:
- * <code>SocketTextStreamWordCount &lt;hostname&gt; &lt;port&gt;</code>
- * <br>
- * 
- * <p>
- * This example shows how to:
- * <ul>
- * <li>use StreamExecutionEnvironment.socketTextStream
- * <li>write a simple Flink program
- * <li>write and use user-defined functions
- * </ul>
- * 
- * @see <a href="www.openbsd.org/cgi-bin/man.cgi?query=nc">netcat</a>
- */
 public class MqttWordCount2Mqtt {
 
 	//
-	//	Program
+	// Program
 	//
 
 	public static void main(String[] args) throws Exception {
 
-		if (args.length != 3){
+		if (args.length != 3) {
 			System.err.println("USAGE:\nMqttWordCount2Mqtt <hostname> <topic IN> <topic OUT>");
 			return;
 		}
@@ -67,20 +41,18 @@ public class MqttWordCount2Mqtt {
 		String topicOut = args[2];
 
 		// set up the execution environment
-		final StreamExecutionEnvironment env = StreamExecutionEnvironment
-				.getExecutionEnvironment();
+		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		// get input data
 		DataStream<MqttMessage> text = env.addSource(new MqttSource(hostName, topicIn));
 
 		DataStream<Tuple2<String, Integer>> counts =
-		// split up the lines in pairs (2-tuples) containing: (word,1)
-		text.flatMap(new LineSplitter())
-		// group by the tuple field "0" and sum up tuple field "1"
-				.keyBy(0)
-				.sum(1);
+				// split up the lines in pairs (2-tuples) containing: (word,1)
+				text.flatMap(new LineSplitter())
+						// group by the tuple field "0" and sum up tuple field "1"
+						.keyBy(0).sum(1);
 
-//		counts.print();
+		// counts.print();
 		counts.addSink(new MqttSink<>(hostName, topicOut));
 
 		// execute program
@@ -88,13 +60,13 @@ public class MqttWordCount2Mqtt {
 	}
 
 	//
-	// 	User Functions
+	// User Functions
 	//
 
 	/**
-	 * Implements the string tokenizer that splits sentences into words as a user-defined
-	 * FlatMapFunction. The function takes a line (String) and splits it into
-	 * multiple pairs in the form of "(word,1)" (Tuple2<String, Integer>).
+	 * Implements the string tokenizer that splits sentences into words as a
+	 * user-defined FlatMapFunction. The function takes a line (String) and splits
+	 * it into multiple pairs in the form of "(word,1)" (Tuple2<String, Integer>).
 	 */
 	@SuppressWarnings("serial")
 	public static final class LineSplitter implements FlatMapFunction<MqttMessage, Tuple2<String, Integer>> {
@@ -111,5 +83,5 @@ public class MqttWordCount2Mqtt {
 				}
 			}
 		}
-	}	
+	}
 }

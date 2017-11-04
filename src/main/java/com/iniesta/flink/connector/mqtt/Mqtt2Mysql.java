@@ -29,32 +29,7 @@ import org.apache.flink.util.Collector;
 
 import com.iniesta.flink.connector.mysql.MysqlSink;
 
-/**
- * This example shows an implementation of WordCount with data from a text
- * socket. To run the example make sure that the service providing the text data
- * is already up and running.
- * 
- * <p>
- * To start an example socket text stream on your local machine run netcat from
- * a command line: <code>nc -lk 9999</code>, where the parameter specifies the
- * port number.
- * 
- * 
- * <p>
- * Usage:
- * <code>SocketTextStreamWordCount &lt;hostname&gt; &lt;port&gt;</code>
- * <br>
- * 
- * <p>
- * This example shows how to:
- * <ul>
- * <li>use StreamExecutionEnvironment.socketTextStream
- * <li>write a simple Flink program
- * <li>write and use user-defined functions
- * </ul>
- * 
- * @see <a href="www.openbsd.org/cgi-bin/man.cgi?query=nc">netcat</a>
- */
+
 public class Mqtt2Mysql {
 
 	//
