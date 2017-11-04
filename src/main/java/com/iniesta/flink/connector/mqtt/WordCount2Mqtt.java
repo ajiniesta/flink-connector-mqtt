@@ -25,23 +25,10 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
 
-/**
- * Implements the "WordCount" program that computes a simple word occurrence histogram
- * over some sample data
- *
- * <p>
- * This example shows how to:
- * <ul>
- * <li>write a simple Flink program.
- * <li>use Tuple data types.
- * <li>write and use user-defined functions.
- * </ul>
- *
- */
 public class WordCount2Mqtt {
 
 	//
-	//	Program
+	// Program
 	//
 
 	public static void main(String[] args) throws Exception {
@@ -50,38 +37,33 @@ public class WordCount2Mqtt {
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 		// get input data
-		DataSet<String> text = env.fromElements(
-				"To be, or not to be,--that is the question:--",
-				"Whether 'tis nobler in the mind to suffer",
-				"The slings and arrows of outrageous fortune",
-				"Or to take arms against a sea of troubles,"
-				);
+		DataSet<String> text = env.fromElements("To be, or not to be,--that is the question:--",
+				"Whether 'tis nobler in the mind to suffer", "The slings and arrows of outrageous fortune",
+				"Or to take arms against a sea of troubles,");
 
 		DataSet<Tuple2<String, Integer>> counts =
 				// split up the lines in pairs (2-tuples) containing: (word,1)
 				text.flatMap(new LineSplitter())
-				// group by the tuple field "0" and sum up tuple field "1"
-				.groupBy(0)
-				.sum(1);
+						// group by the tuple field "0" and sum up tuple field "1"
+						.groupBy(0).sum(1);
 
 		// execute and print result
-//		counts.print();
-		
+		// counts.print();
 
-		DataSink<Tuple2<String,Integer>> dataSink = counts.output(new MqttOutputFormat<>("cydonia", 1883, "/samples"));
-		
+		DataSink<Tuple2<String, Integer>> dataSink = counts.output(new MqttOutputFormat<>("cydonia", 1883, "/samples"));
+
 		env.execute();
-		
+
 	}
 
 	//
-	// 	User Functions
+	// User Functions
 	//
 
 	/**
-	 * Implements the string tokenizer that splits sentences into words as a user-defined
-	 * FlatMapFunction. The function takes a line (String) and splits it into
-	 * multiple pairs in the form of "(word,1)" (Tuple2<String, Integer>).
+	 * Implements the string tokenizer that splits sentences into words as a
+	 * user-defined FlatMapFunction. The function takes a line (String) and splits
+	 * it into multiple pairs in the form of "(word,1)" (Tuple2<String, Integer>).
 	 */
 	public static final class LineSplitter implements FlatMapFunction<String, Tuple2<String, Integer>> {
 
