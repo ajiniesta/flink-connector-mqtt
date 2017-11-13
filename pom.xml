@@ -26,8 +26,8 @@
 			outside the "coverage" profile because we want to be to able to execute mvn 
 			sonar:sonar without passing a profile -->
 		<!-- Tells Sonar to use jacoco for coverage results -->
-		<sonar.projectKey></sonar.projectKey>
-		<sonar.projectName>flink-connector-mqtt</sonar.projectName>
+		<sonar.projectKey>flink-connector-mqtt</sonar.projectKey>
+		<sonar.projectName>Flink Connector Mqtt</sonar.projectName>
 		<sonar.projectVersion>${yearMonth}</sonar.projectVersion>
 		<sonar.language>java</sonar.language>
 		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
