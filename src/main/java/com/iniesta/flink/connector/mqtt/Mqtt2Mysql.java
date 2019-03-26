@@ -47,7 +47,7 @@ public class Mqtt2Mysql {
 		String hostName = props.getProperty("mqtt.host");
 		int port = Integer.parseInt(props.getProperty("mqtt.port", "1883"));		
 		String topicIn = props.getProperty("mqtt.topic");
-		
+		System.out.println("Properties.... " + props.toString());
 
 		// set up the execution environment
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment
@@ -66,7 +66,10 @@ public class Mqtt2Mysql {
 //		text.print();
 //		counts.addSink(new MqttSink<>(hostName, topicOut));
 		text.addSink(new MysqlSink(props));
-		// execute program
+		// execute program		
+		int parallelism = Integer.parseInt(props.getProperty("flink.parallelism", "2"));
+		env.setParallelism(parallelism);
+		System.out.println("About to execute....");
 		env.execute("Mqtt 2 Mysql");
 	}
 

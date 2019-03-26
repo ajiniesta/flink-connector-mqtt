@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -70,7 +73,7 @@ public class MysqlDao implements Serializable {
 			PreparedStatement insertStmnt = connection.prepareStatement(insertQuery );
             insertStmnt.setString(1, escapeSQL(msg.getTopic()));
             insertStmnt.setString(2, escapeSQL(msg.getPayload()));
-            insertStmnt.execute();
+            insertStmnt.execute();            
         } catch (SQLException e) {
             logger.error("Error during the updating of the event", e);
         }
@@ -84,6 +87,17 @@ public class MysqlDao implements Serializable {
 		}catch(SQLException e) {
 			logger.error("Error during the creation of the table", e);
 		}
+	}
+
+	public List<String> testQuery() throws SQLException {
+		List<String> output = new ArrayList<>();
+		PreparedStatement ps = connection.prepareStatement("select id, a, b from data");
+		ResultSet rs = ps.executeQuery();
+		while(rs!=null && rs.next()) {
+			String res = String.format("(%s,%s,%s)", rs.getInt(1), rs.getInt(2), rs.getInt(3));
+			output.add(res);
+		}
+		return output;
 	}
 }
 
