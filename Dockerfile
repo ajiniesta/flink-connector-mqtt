@@ -8,6 +8,6 @@ RUN mkdir /usr/mqtt2mysql
 
 COPY target/flink-connector-mqtt-*.jar /usr/mqtt2mysql/flink-con-mqtt.jar
 
-CMD java -cp /usr/mqtt2mysql/flink-con-mqtt.jar com.iniesta.flink.connector.mqtt.Mqtt2Mysql --conf /conf/conf.properties
+CMD sleep 15 && java -cp /usr/mqtt2mysql/flink-con-mqtt.jar com.iniesta.flink.connector.mqtt.Mqtt2Mysql --conf /conf/conf.properties
 
  
