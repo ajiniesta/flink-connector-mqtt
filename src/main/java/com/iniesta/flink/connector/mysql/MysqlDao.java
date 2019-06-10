@@ -25,12 +25,20 @@ public class MysqlDao implements Serializable {
 	private String pass;
 	private String driver;
 	private transient Connection connection;
+
+	private final String defaultInsertQuery = "insert into messages(topic, payload, ts) values (?,?,now())";
+	private final String defaultCreateQuery = "create table if not exists messages(id int not null auto_increment primary key, topic varchar(255), payload varchar(10000),ts datetime)";
+	private String sqlCreate;
+	private String sqlInsert;
 	
 	public MysqlDao(Properties props) {
+		
 		url = props.getProperty("jdbc.url");
 		user = props.getProperty("jdbc.user");
 		pass = props.getProperty("jdbc.pass");
 		driver = props.getProperty("jdbc.driver");
+		sqlCreate = props.getProperty("jdbc.sql.create", defaultCreateQuery);
+		sqlInsert = props.getProperty("jdbc.sql.insert", defaultInsertQuery);
 	}
 
 	public void open() {
@@ -69,8 +77,7 @@ public class MysqlDao implements Serializable {
 	
 	private void insertData(MqttMessage msg) {
         try {
-            String insertQuery = "insert into messages(topic, payload, ts) values (?,?,now())";
-			PreparedStatement insertStmnt = connection.prepareStatement(insertQuery );
+			PreparedStatement insertStmnt = connection.prepareStatement(sqlInsert );
             insertStmnt.setString(1, escapeSQL(msg.getTopic()));
             insertStmnt.setString(2, escapeSQL(msg.getPayload()));
             insertStmnt.execute();            
@@ -79,11 +86,10 @@ public class MysqlDao implements Serializable {
         }
     }
 
-	private void createTable() {
-		String createTable = "create table if not exists messages(id int not null auto_increment primary key, topic varchar(255), payload varchar(10000),ts datetime)";
+	private void createTable() {		
 		try {
 			Statement statement = connection.createStatement();
-			statement.executeUpdate(createTable);
+			statement.executeUpdate(sqlCreate);
 		}catch(SQLException e) {
 			logger.error("Error during the creation of the table", e);
 		}

@@ -70,7 +70,7 @@ public class Mqtt2Mysql {
 		int parallelism = Integer.parseInt(props.getProperty("flink.parallelism", "2"));
 		env.setParallelism(parallelism);
 		System.out.println("About to execute....");
-		env.execute("Mqtt 2 Mysql");
+		env.execute("Mqtt 2 JDBC");
 	}
 
 	//
