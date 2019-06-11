@@ -39,12 +39,15 @@ public class MqttSource extends RichSourceFunction<MqttMessage>{
 
 	@Override
 	public void run(SourceContext<MqttMessage> sourceContext) throws Exception {
+		System.out.println("[Source] Running source");
 		MQTT mqtt = new MQTT();
 		mqtt.setHost(host, port);
 		BlockingConnection blockingConnection = mqtt.blockingConnection();
 		blockingConnection.connect();
+		System.out.println("[Source] Connected to mqtt broker");
 		
 		byte[] qoses = blockingConnection.subscribe(new Topic[] {new Topic(topic, qos)});
+		System.out.println("[Source] Subscribed to " + topic);
 		
 		while(blockingConnection.isConnected()) {
 			Message message = blockingConnection.receive();
